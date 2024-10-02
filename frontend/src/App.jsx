@@ -1,0 +1,24 @@
+// src/App.jsx
+import React from 'react';
+import { Routes, Route } from 'react-router-dom';
+import Home from './pages/Home';
+import GameRoom from './pages/GameRoom';
+import Login from './pages/Login';
+import Register from './pages/Register';
+import { ToastContainer } from 'react-toastify';
+
+const App = () => {
+  return (
+    <>
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/game/:sessionId" element={<GameRoom />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
+      </Routes>
+      <ToastContainer />
+    </>
+  );
+};
+
+export default App;
