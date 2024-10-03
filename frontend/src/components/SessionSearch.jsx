@@ -5,6 +5,17 @@ import { searchSessions, createSession, joinSession } from '../services/api';
 import { useNavigate } from 'react-router-dom';
 import { AppContext } from '../store/store';
 import { toast } from 'react-toastify';
+import {
+  Container,
+  Typography,
+  Grid,
+  TextField,
+  Button,
+  List,
+  ListItem,
+  ListItemText,
+  Box,
+} from '@mui/material';
 
 const SessionSearch = () => {
   const [sessions, setSessions] = useState([]);
@@ -47,7 +58,7 @@ const SessionSearch = () => {
 
   const handleJoin = async (sessionId) => {
     try {
-      await joinSession(sessionId);
+      const res = await joinSession(sessionId);
       dispatch({ type: 'SET_SESSION', payload: { id: sessionId } });
       toast.success('Joined session successfully');
       navigate(`/game/${sessionId}`);
@@ -64,28 +75,50 @@ const SessionSearch = () => {
   };
 
   return (
-    <div>
-      <h3>Active Sessions</h3>
-      <ul>
-        {sessions.map((session) => (
-          <li key={session.id}>
-            {session.title} -{' '}
-            <button onClick={() => handleJoin(session.id)}>Join</button>
-          </li>
-        ))}
-      </ul>
-      <h3>Create New Session</h3>
-      <form onSubmit={handleCreate}>
-        <input
-          type="text"
-          placeholder="Session Title"
-          value={title}
-          onChange={(e) => setTitle(e.target.value)}
-          required
-        />
-        <button type="submit">Create</button>
-      </form>
-    </div>
+    <Container maxWidth="md">
+      <Box sx={{ mt: 4 }}>
+        <Typography variant="h5" gutterBottom>
+          Active Sessions
+        </Typography>
+        <List>
+          {sessions.map((session) => (
+            <ListItem
+              key={session.id}
+              secondaryAction={
+                <Button variant="contained" onClick={() => handleJoin(session.id)}>
+                  Join
+                </Button>
+              }
+            >
+              <ListItemText primary={session.title} />
+            </ListItem>
+          ))}
+        </List>
+      </Box>
+      <Box sx={{ mt: 4 }}>
+        <Typography variant="h5" gutterBottom>
+          Create New Session
+        </Typography>
+        <Box component="form" onSubmit={handleCreate}>
+          <Grid container spacing={2}>
+            <Grid item xs={12} sm={9}>
+              <TextField
+                fullWidth
+                label="Session Title"
+                value={title}
+                onChange={(e) => setTitle(e.target.value)}
+                required
+              />
+            </Grid>
+            <Grid item xs={12} sm={3}>
+              <Button type="submit" variant="contained" fullWidth>
+                Create
+              </Button>
+            </Grid>
+          </Grid>
+        </Box>
+      </Box>
+    </Container>
   );
 };
 

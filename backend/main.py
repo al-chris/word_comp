@@ -110,14 +110,13 @@ async def join_session_event(sid, data):
             await sio.emit("error", {"message": "Session not found or inactive"}, to=sid)
             db.close()
             return
-        # Await the session data
         user_session = await sio.get_session(sid)
         user_id = user_session.get("user_id")
         if not user_id:
             await sio.emit("error", {"message": "User not authenticated"}, to=sid)
             db.close()
             return
-        await sio.enter_room(sid, f"session_{session_id}")  # Added 'await'
+        await sio.enter_room(sid, f"session_{session_id}")  # Awaited
         await sio.emit("player_joined", {"user_id": user_id}, room=f"session_{session_id}")
         # Initialize turn order
         if session_id not in session_turns:

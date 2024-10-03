@@ -4,7 +4,7 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from typing import List
 from pydantic import BaseModel  # Add this import
-from ..schemas import SessionCreate, SessionOut
+from ..schemas import SessionCreate, SessionOut, JoinSession
 from ..models import Session as GameSession, Story, Player, User
 from ..database import SessionLocal
 from ..utils.security import decode_access_token
@@ -16,9 +16,6 @@ router = APIRouter(
 )
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/auth/login/")
-
-class JoinSession(BaseModel):  # Define Pydantic model
-    session_id: int
 
 def get_db():
     db = SessionLocal()

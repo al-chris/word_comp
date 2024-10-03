@@ -1,9 +1,10 @@
-// src/components/TypingInterface.jsx
+// Example: TypingInterface.jsx
 
 import React, { useState, useContext, useEffect, useRef } from 'react';
 import { AppContext } from '../store/store';
 import { socket } from '../services/socket';
 import { toast } from 'react-toastify';
+import { TextField, Button, Box, Typography } from '@mui/material';
 
 const TypingInterface = () => {
   const { state } = useContext(AppContext);
@@ -14,6 +15,10 @@ const TypingInterface = () => {
     e.preventDefault();
     if (!state.session || !state.session.id) {
       toast.error('Session not found');
+      return;
+    }
+    if (!state.user || !state.user.id) {
+      toast.error('User not found');
       return;
     }
     if (content.trim() === '') {
@@ -48,31 +53,43 @@ const TypingInterface = () => {
     }
   }, [state.currentTurn, state.user.id]);
 
-  if (!state.session) {
-    return <div>Loading...</div>;
+  if (!state.session || !state.user) {
+    return <Typography>Loading...</Typography>;
   }
 
   return (
-    <div>
-      {state.currentTurn === state.user.id && (
-        <form onSubmit={handleSubmit}>
-          <textarea
-            ref={textareaRef}
-            placeholder="Your contribution..."
+    <Box sx={{ mt: 4 }}>
+      {state.currentTurn === state.user.id ? (
+        <Box component="form" onSubmit={handleSubmit}>
+          <TextField
+            inputRef={textareaRef}
+            label="Your Contribution"
+            multiline
+            rows={4}
+            fullWidth
             value={content}
             onChange={(e) => setContent(e.target.value)}
-            autoFocus
+            variant="outlined"
+            sx={{ mb: 2 }}
           />
-          <button type="submit">Submit</button>
-        </form>
+          <Button type="submit" variant="contained" color="primary" fullWidth>
+            Submit
+          </Button>
+          <Box sx={{ mt: 2, display: 'flex', gap: 2 }}>
+            <Button variant="outlined" color="secondary" onClick={handlePause} fullWidth>
+              Pause
+            </Button>
+            <Button variant="outlined" color="secondary" onClick={handleResume} fullWidth>
+              Resume
+            </Button>
+          </Box>
+        </Box>
+      ) : (
+        <Typography variant="h6" align="center">
+          Waiting for your turn...
+        </Typography>
       )}
-      {state.currentTurn === state.user.id && (
-        <div>
-          <button onClick={handlePause}>Pause</button>
-          <button onClick={handleResume}>Resume</button>
-        </div>
-      )}
-    </div>
+    </Box>
   );
 };
 

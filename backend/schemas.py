@@ -32,3 +32,6 @@ class StoryUpdate(BaseModel):
 class Token(BaseModel):
     access_token: str
     token_type: str
+
+class JoinSession(BaseModel):
+    session_id: int
